@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -1.25rem, 0) scale(1.04);
+  }
+}
+
+@keyframes slow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scan {
+  0%,
+  100% {
+    transform: translateY(-1rem) scaleY(0.65);
+    opacity: 0.25;
+  }
+
+  50% {
+    transform: translateY(10rem) scaleY(1);
+    opacity: 0.65;
+  }
+}
+
+.animate-drift {
+  animation: drift 16s ease-in-out infinite;
+}
+
+.animate-slow-spin {
+  animation: slow-spin 28s linear infinite;
+}
+
+.animate-rise {
+  animation: rise 700ms ease-out both;
+}
+
+.animate-rise-delayed {
+  animation: rise 800ms ease-out 140ms both;
+}
+
+.animate-scan {
+  animation: scan 7s ease-in-out infinite;
+}
+
+button:not(:disabled),
+select:not(:disabled),
+summary,
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
+}

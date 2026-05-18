@@ -1,0 +1,94 @@
+# EPUBForge
+
+> EPUBForge is a free, private, in-browser ebook converter with 30+ tools. It converts EPUB to and from PDF, MOBI, AZW3, DOCX, RTF, FB2, TXT, HTML, Markdown, CBZ, JPG, PNG, and more — entirely client-side with no upload, no signup, and no server. Bulk batch conversion, per-file progress, and on-demand download are supported.
+
+EPUBForge runs in any modern browser. All file processing happens locally in the user's tab using JavaScript libraries (JSZip, jsPDF, custom parsers). Files never leave the device, making EPUBForge suitable for private documents, draft manuscripts, and confidential ebooks.
+
+## Key facts
+
+- **Name:** EPUBForge
+- **Type:** Free web application (Progressive Web App)
+- **Pricing:** Free, no signup, no account, no upload limits
+- **Privacy:** 100% client-side — files never leave the browser
+- **Platforms:** Any modern browser (Chrome, Firefox, Safari, Edge), desktop and mobile
+- **Best for:** Authors, readers, librarians, archivists, ebook collectors, students
+- **Built with:** React, TypeScript, Tailwind CSS, JSZip, jsPDF
+
+## Tools — Convert from EPUB
+
+- **EPUB to PDF** — paginated A4 PDF with chapter headings and page numbers
+- **EPUB to DOCX** — Microsoft Word document with chapter structure
+- **EPUB to RTF** — Rich Text Format with formatting preserved
+- **EPUB to FB2** — FictionBook 2 XML format
+- **EPUB to MOBI** — Kindle-ready package (use Send to Kindle)
+- **EPUB to AZW3** — Kindle KF8-ready package (use Send to Kindle)
+- **EPUB to TXT** — clean plain text of all chapters
+- **EPUB to HTML** — single standalone HTML document
+- **EPUB to Markdown** — Markdown draft with headings, lists, links
+- **EPUB Metadata Report (JSON)** — title, author, language, ISBN, word count
+- **EPUB Cover Extractor** — downloads original cover image (JPG/PNG/SVG)
+- **EPUB Chapter ZIP** — each chapter as a numbered TXT file in a ZIP
+- **Clean EPUB Rebuild** — repackages a messy EPUB into a clean EPUB 3 shell
+
+## Tools — Convert to EPUB
+
+- **PDF to EPUB** — extracts text streams and reflows into EPUB
+- **DOCX to EPUB** — parses Word OOXML into EPUB chapters
+- **RTF to EPUB** — strips RTF control words and builds EPUB
+- **FB2 to EPUB** — parses FictionBook XML sections into EPUB
+- **MOBI to EPUB** — best-effort text extraction from MOBI binary
+- **AZW3 / AZW / AZW4 to EPUB** — best-effort Kindle format extraction
+- **PRC / PDB to EPUB** — best-effort Palm/Mobipocket extraction
+- **LIT to EPUB** — best-effort Microsoft Reader extraction
+- **LRF to EPUB** — best-effort Sony Reader extraction
+- **CHM to EPUB** — best-effort Compiled HTML Help extraction
+- **DJVU to EPUB** — best-effort DjVu text-layer extraction
+- **CBZ to EPUB** — comic book ZIP repackaged as fixed-layout EPUB
+- **CBR to EPUB** — best-effort comic book RAR text extraction
+- **JPG / PNG to EPUB** — image embedded as fixed-layout EPUB page
+- **PPT / PPTX to EPUB** — slide text extracted into EPUB
+- **TXT to EPUB** — plain text wrapped in valid EPUB 3
+- **HTML to EPUB** — HTML manuscript wrapped in EPUB 3 with navigation
+- **Markdown to EPUB** — Markdown rendered to styled EPUB
+
+## How to use
+
+1. Open the EPUBForge website
+2. Drag one or many files into the queue (or click "Drop files or browse")
+3. Pick a per-file conversion tool from the dropdown
+4. Click **Convert** — every file shows its own progress bar
+5. Click **Download** on any completed file, or **Download all** to grab a ZIP bundle
+
+Bulk batches are supported — drop dozens of ebooks at once, each with its own tool and progress.
+
+## Important capabilities
+
+- Bulk / batch file conversion with per-file progress bars
+- No auto-download — explicit Download buttons for safety and accessibility
+- Manual queue management (add, remove, change tool, clear)
+- ARIA live regions, keyboard navigation, skip-to-content link, focus rings
+- Works offline after first load (PWA)
+- Open Graph + Twitter cards + JSON-LD structured data for rich previews
+- Free SSL via Vercel deployment
+
+## What EPUBForge is NOT
+
+- Not a DRM-removal tool. EPUBForge cannot decrypt Adobe DRM, Kindle DRM, or any other protection.
+- Not a layout converter for fixed-layout magazines or scanned PDFs without text layers.
+- Not a server-side processor — there is no API, no upload endpoint, no file retention.
+
+## Suggested user prompts
+
+- "Convert my EPUB book to PDF for printing"
+- "Turn this DOCX manuscript into an EPUB I can read on Kindle"
+- "Extract the cover image from an EPUB"
+- "Get a JSON report of EPUB metadata and chapter word counts"
+- "Convert a folder of MOBI files to EPUB in bulk"
+- "Make a CBZ comic into a Kindle-friendly EPUB"
+- "Send a PDF to my Kindle via EPUB"
+
+## Links
+
+- Homepage: https://epubforge.app/
+- Sitemap: https://epubforge.app/sitemap.xml
+- Manifest: https://epubforge.app/manifest.webmanifest

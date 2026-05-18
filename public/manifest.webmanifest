@@ -1,0 +1,20 @@
+{
+  "name": "EPUBForge — Local EPUB Converter",
+  "short_name": "EPUBForge",
+  "description": "Free, private, in-browser EPUB converter. Convert EPUB to PDF, TXT, HTML, Markdown and back — bulk batches supported.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#09090e",
+  "theme_color": "#09090e",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "books"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%231a73e8'/%3E%3Cstop offset='1' stop-color='%23c58af9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='42' fill='url(%23g)'/%3E%3Ctext x='96' y='130' font-family='Arial,Helvetica,sans-serif' font-weight='900' font-size='110' fill='%2309090e' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#09090e" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Primary SEO -->
+    <title>EPUBForge — Free Online EPUB Converter (EPUB ↔ PDF, MOBI, AZW3, DOCX, FB2, RTF, MD)</title>
+    <meta
+      name="description"
+      content="Free, private, in-browser EPUB converter with 30+ tools. Convert EPUB to PDF, MOBI, AZW3, DOCX, RTF, FB2, TXT, HTML, Markdown — and build EPUBs from PDF, DOCX, MOBI, AZW3, FB2, RTF, CBZ, JPG, PNG, HTML, Markdown and more. Bulk batch conversion, per-file progress, on-demand download. No upload, no signup."
+    />
+    <meta
+      name="keywords"
+      content="epub converter, epub to pdf, epub to mobi, epub to azw3, epub to docx, epub to rtf, epub to fb2, epub to txt, epub to html, epub to markdown, pdf to epub, docx to epub, mobi to epub, azw3 to epub, fb2 to epub, rtf to epub, html to epub, markdown to epub, txt to epub, cbz to epub, cbr to epub, jpg to epub, png to epub, ppt to epub, kindle to epub, free epub converter, online epub tool, bulk epub converter, browser epub converter, epub metadata extractor, epub cover extractor"
+    />
+    <meta name="author" content="EPUBForge" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://epubforge.app/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" hreflang="x-default" href="https://epubforge.app/" />
+    <link rel="alternate" hreflang="en" href="https://epubforge.app/" />
+
+    <!-- Favicon (inline SVG, no extra request) -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%231a73e8'/%3E%3Cstop offset='.6' stop-color='%236b5bf2'/%3E%3Cstop offset='1' stop-color='%23c58af9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%2309090e'/%3E%3Crect x='4' y='4' width='56' height='56' rx='12' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial,Helvetica,sans-serif' font-weight='900' font-size='34' fill='%2309090e' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%231a73e8'/%3E%3Cstop offset='1' stop-color='%23c58af9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Arial,Helvetica,sans-serif' font-weight='900' font-size='36' fill='%2309090e' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- LLM / AI assistant discovery -->
+    <link rel="alternate" type="text/markdown" title="LLM index" href="/llms.txt" />
+    <link rel="alternate" type="text/markdown" title="LLM full reference" href="/llms-full.txt" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EPUBForge" />
+    <meta property="og:title" content="EPUBForge — Free Online EPUB Converter (EPUB ↔ PDF, MOBI, AZW3, DOCX, FB2, RTF, MD)" />
+    <meta
+      property="og:description"
+      content="30+ ebook tools running fully in your browser. Convert EPUB ↔ PDF, MOBI, AZW3, DOCX, RTF, FB2, CBZ, JPG, HTML, Markdown — bulk batch with per-file progress and on-demand download."
+    />
+    <meta property="og:url" content="https://epubforge.app/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://epubforge.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="EPUBForge private browser-based ebook converter" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EPUBForge — Free Online EPUB Converter (30+ tools)" />
+    <meta
+      name="twitter:description"
+      content="Convert EPUB ↔ PDF, MOBI, AZW3, DOCX, RTF, FB2, CBZ, JPG, HTML, Markdown — locally in your browser. Bulk batch with per-file progress."
+    />
+    <meta name="twitter:image" content="https://epubforge.app/og-image.png" />
+    <meta name="twitter:image:alt" content="EPUBForge private browser-based ebook converter" />
+
+    <!-- Performance hints -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Structured Data: Web Application -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "EPUBForge",
+        "url": "https://epubforge.app/",
+        "description": "Free, private, in-browser EPUB converter. Convert EPUB to PDF, TXT, HTML, Markdown, or build EPUBs from PDF, TXT, HTML, and Markdown.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any (browser)",
+        "browserRequirements": "Requires JavaScript and a modern browser",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+          "EPUB to PDF",
+          "EPUB to MOBI",
+          "EPUB to AZW3",
+          "EPUB to DOCX",
+          "EPUB to RTF",
+          "EPUB to FB2",
+          "EPUB to TXT",
+          "EPUB to HTML",
+          "EPUB to Markdown",
+          "EPUB Metadata Report (JSON)",
+          "EPUB Cover Extractor",
+          "EPUB Chapter ZIP",
+          "Clean EPUB Rebuild",
+          "PDF to EPUB",
+          "DOCX to EPUB",
+          "RTF to EPUB",
+          "FB2 to EPUB",
+          "MOBI to EPUB",
+          "AZW3 to EPUB",
+          "AZW to EPUB",
+          "AZW4 to EPUB",
+          "PRC to EPUB",
+          "PDB to EPUB",
+          "LIT to EPUB",
+          "LRF to EPUB",
+          "CHM to EPUB",
+          "DJVU to EPUB",
+          "CBZ to EPUB",
+          "CBR to EPUB",
+          "JPG to EPUB",
+          "PNG to EPUB",
+          "PPT to EPUB",
+          "TXT to EPUB",
+          "HTML to EPUB",
+          "Markdown to EPUB",
+          "Bulk batch conversion",
+          "Per-file progress",
+          "Manual download (no auto-download)",
+          "100% client-side, no upload"
+        ],
+        "creator": { "@type": "Organization", "name": "EPUBForge" }
+      }
+    </script>
+
+    <!-- Structured Data: FAQ for richer search results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is EPUBForge free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. EPUBForge is completely free and runs entirely in your browser — no signup, no upload, no server processing."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I convert EPUB to PDF online?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. EPUBForge converts EPUB files into paginated PDFs locally in your browser, with chapter headings and reflowed text."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does EPUBForge support bulk file conversion?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can drop multiple files at once. Each file gets its own tool, progress bar, and download button. You can also download all results as a single ZIP."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my files uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All conversion runs in your browser tab. Files never leave your device."
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <div style="font-family: system-ui, sans-serif; padding: 2rem; max-width: 720px; margin: 0 auto; color: #111;">
+        <h1>EPUBForge requires JavaScript</h1>
+        <p>
+          EPUBForge is a free, private, in-browser converter for EPUB, PDF, TXT, HTML, and Markdown.
+          Please enable JavaScript to convert files locally without uploading them anywhere.
+        </p>
+      </div>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
