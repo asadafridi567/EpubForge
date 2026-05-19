@@ -2,6 +2,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import JSZip from "jszip";
 import { jsPDF } from "jspdf";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import FAQPage from "./pages/FAQ";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Cookies from "./pages/Cookies";
+import NavBar from "./components/NavBar";
+import { AppContext } from "./context/AppContext";
 
 GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.mjs", import.meta.url).toString();
 
@@ -3255,11 +3268,10 @@ export default function App() {
     document.documentElement.dir = isArabic ? "rtl" : "ltr";
   }, [locale]);
 
-  function rotateLocale(delta: number) {
-    const currentIndex = localeOptions.findIndex((option) => option.code === locale);
-    const nextIndex = (currentIndex + delta + localeOptions.length) % localeOptions.length;
-    setLocale(localeOptions[nextIndex].code);
-  }
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
   const isDark = theme === "dark";
   const c = {
@@ -3652,6 +3664,7 @@ export default function App() {
   }
 
   return (
+    <AppContext.Provider value={{ theme, isDark, locale, setLocale: (v) => setLocale(v as LocaleCode), setTheme }}>
     <div className={`min-h-screen overflow-x-hidden selection:bg-indigo-500 selection:text-white transition-colors duration-300 ${
       theme === "dark" ? "bg-[#09090e] text-slate-100" : "bg-[#f8f7f4] text-slate-900"
     }`}>
@@ -3681,58 +3694,12 @@ export default function App() {
         </div>
       )}
 
-      <header className={`relative mx-auto flex max-w-7xl items-center justify-between border-b px-4 py-5 text-xs font-bold uppercase tracking-[0.24em] sm:px-6 lg:px-8 ${c.headerBorder} ${c.textSoft}`}>
-        <div className="flex items-center gap-3">
-          <div aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-[1px]">
-            <div className={`flex h-full w-full items-center justify-center rounded-[7px] ${isDark ? "bg-[#09090e]" : "bg-white"}`}>
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-base font-black text-transparent">E</span>
-            </div>
-          </div>
-          <span className={`bg-gradient-to-r ${isDark ? "from-white via-slate-100 to-slate-300" : "from-slate-900 via-slate-700 to-slate-500"} bg-clip-text text-transparent tracking-widest font-extrabold`}>
-            EPUBForge
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <select
-            id="locale-switcher"
-            value={locale}
-            onChange={(event) => setLocale(event.target.value as LocaleCode)}
-            onWheel={(event) => {
-              event.preventDefault();
-              rotateLocale(event.deltaY > 0 ? 1 : -1);
-            }}
-            aria-label={t.localeLabel}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-bold normal-case tracking-normal outline-none focus-visible:border-indigo-400 focus-visible:ring-2 focus-visible:ring-indigo-300 ${
-              theme === "dark"
-                ? "border-slate-700 bg-slate-900/90 text-indigo-100"
-                : "border-slate-300 bg-white text-indigo-700"
-            }`}
-          >
-            {localeOptions.map((option) => (
-              <option key={option.code} value={option.code}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+      <NavBar isDark={isDark} theme={theme} setTheme={setTheme} c={c} />
 
-          {/* Theme toggle button */}
-          <button
-            type="button"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className={`flex h-8 w-8 items-center justify-center rounded-lg border text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${
-              theme === "dark"
-                ? "border-slate-700 bg-slate-900/90 text-yellow-300 hover:bg-slate-800"
-                : "border-slate-300 bg-white text-slate-600 hover:bg-slate-100"
-            }`}
-          >
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
-        </div>
-      </header>
-
-      <main id="main-content" tabIndex={-1} className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        {/* Hero */}
+      {useLocation().pathname === '/' ? (
+        <>
+          <main id="main-content" tabIndex={-1} className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+            {/* Hero */}
         <section aria-labelledby="hero-title" className="grid items-start gap-10 py-10 lg:grid-cols-[1fr_1.05fr] lg:py-14">
           <div className="max-w-2xl animate-rise">
             <p className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold backdrop-blur-md ${isDark ? "border-indigo-400/40 bg-indigo-500/10 text-indigo-200" : "border-indigo-300 bg-indigo-50 text-indigo-600"}`}>
@@ -4430,13 +4397,98 @@ export default function App() {
           </div>
         </div>
       ) : null}
+        </>
+      ) : (
+        <div className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 min-h-[60vh]">
+          <Routes>
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
+          </Routes>
+        </div>
+      )}
 
-      <footer className={`border-t px-4 py-8 text-center text-xs sm:px-6 lg:px-8 ${c.footer}`}>
-        <p>{t.footer}</p>
-        <p className={`mt-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-          © {new Date().getFullYear()} EPUBForge · {t.copyrightNotice}
-        </p>
+      <Analytics />
+      <SpeedInsights />
+
+      <footer className={`border-t ${isDark ? "bg-[#09090e] border-slate-800 text-slate-400" : "bg-[#f8f9fa] border-slate-200 text-slate-500"}`}>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+
+            {/* Brand column */}
+            <div className="lg:col-span-1">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-[1px]">
+                  <div className={`flex h-full w-full items-center justify-center rounded-[6px] ${isDark ? "bg-[#09090e]" : "bg-white"}`}>
+                    <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-xs font-black text-transparent">E</span>
+                  </div>
+                </div>
+                <span className={`text-sm font-extrabold tracking-widest ${isDark ? "text-white" : "text-slate-900"}`}>
+                  EPUBFORGE
+                </span>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed">
+                Free, private, in-browser ebook converter.
+              </p>
+              <div className="mt-4 flex gap-3">
+                <a href="#" aria-label="Twitter" className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs transition ${isDark ? "border-slate-700 hover:text-indigo-400" : "border-slate-300 hover:text-indigo-600"}`}>𝕏</a>
+                <a href="#" aria-label="GitHub" className={`flex h-7 w-7 items-center justify-center rounded-full border text-xs transition ${isDark ? "border-slate-700 hover:text-indigo-400" : "border-slate-300 hover:text-indigo-600"}`}>⌨</a>
+              </div>
+            </div>
+
+            {/* Company column */}
+            <div>
+              <h3 className={`mb-4 text-xs font-extrabold uppercase tracking-[0.15em] ${isDark ? "text-white" : "text-slate-900"}`}>Company</h3>
+              <ul className="space-y-3 text-sm">
+                <li><Link to="/about" className="transition hover:text-indigo-500">About</Link></li>
+                <li><Link to="/blog" className="transition hover:text-indigo-500">Blog</Link></li>
+                <li><Link to="/contact" className="transition hover:text-indigo-500">Contact</Link></li>
+                <li><Link to="/faq" className="transition hover:text-indigo-500">FAQ</Link></li>
+              </ul>
+            </div>
+
+            {/* Legal column */}
+            <div>
+              <h3 className={`mb-4 text-xs font-extrabold uppercase tracking-[0.15em] ${isDark ? "text-white" : "text-slate-900"}`}>Legal</h3>
+              <ul className="space-y-3 text-sm">
+                <li><Link to="/privacy" className="transition hover:text-indigo-500">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="transition hover:text-indigo-500">Terms of Service</Link></li>
+                <li><Link to="/cookies" className="transition hover:text-indigo-500">Cookie Policy</Link></li>
+              </ul>
+            </div>
+
+            {/* Language column */}
+            <div>
+              <h3 className={`mb-4 text-xs font-extrabold uppercase tracking-[0.15em] ${isDark ? "text-white" : "text-slate-900"}`}>Language</h3>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-lg">🌐</span>
+                <select
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value as LocaleCode)}
+                  className={`bg-transparent font-medium outline-none ${isDark ? "text-slate-300" : "text-slate-700"}`}
+                >
+                  {localeOptions.map((opt) => (
+                    <option key={opt.code} value={opt.code} className={isDark ? "bg-slate-800" : "bg-white"}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className={`border-t px-4 py-4 text-center text-xs sm:px-6 lg:px-8 ${isDark ? "border-slate-800 text-slate-600" : "border-slate-200 text-slate-400"}`}>
+          Copyright © {new Date().getFullYear()} EPUBForge. {t.copyrightNotice}
+        </div>
       </footer>
     </div>
+    </AppContext.Provider>
   );
 }
