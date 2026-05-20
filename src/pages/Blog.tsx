@@ -16,7 +16,7 @@ type SanityPost = {
   _id: string;
   title?: string;
   excerpt?: string;
-  category?: string;
+  categories?: { title?: string }[];
   publishedAt?: string;
   slug?: { current?: string };
   mainImage?: Parameters<typeof urlFor>[0];
@@ -31,7 +31,8 @@ export const mockPosts: BlogPost[] = [
       "Learn the best browser-based methods to convert your EPUB files to PDF format without losing formatting or images.",
     category: "Tutorial",
     date: "May 15, 2024",
-    image: "https://placehold.co/900x540/6b5bf2/ffffff?text=EPUB+to+PDF",
+    image:
+      "https://placehold.co/900x540/6b5bf2/ffffff?text=EPUB+to+PDF",
   },
   {
     _id: "2",
@@ -41,7 +42,8 @@ export const mockPosts: BlogPost[] = [
       "Understand the differences between EPUB, PDF, MOBI, AZW3, and FB2 formats and when to use each.",
     category: "Guide",
     date: "May 10, 2024",
-    image: "https://placehold.co/600x400/1a73e8/ffffff?text=Ebook+Formats",
+    image:
+      "https://placehold.co/600x400/1a73e8/ffffff?text=Ebook+Formats",
   },
   {
     _id: "3",
@@ -51,7 +53,8 @@ export const mockPosts: BlogPost[] = [
       "A step-by-step guide on extracting high-quality images from your EPUB files using EPUBForge.",
     category: "Tips",
     date: "May 5, 2024",
-    image: "https://placehold.co/600x400/c58af9/ffffff?text=Extract+Images",
+    image:
+      "https://placehold.co/600x400/c58af9/ffffff?text=Extract+Images",
   },
   {
     _id: "4",
@@ -61,7 +64,8 @@ export const mockPosts: BlogPost[] = [
       "Tips for converting PDF documents to reflowable EPUB files for better reading experiences.",
     category: "Tutorial",
     date: "April 28, 2024",
-    image: "https://placehold.co/600x400/1a73e8/ffffff?text=PDF+to+EPUB",
+    image:
+      "https://placehold.co/600x400/1a73e8/ffffff?text=PDF+to+EPUB",
   },
   {
     _id: "5",
@@ -71,7 +75,8 @@ export const mockPosts: BlogPost[] = [
       "Discover the privacy and speed benefits of converting files directly in your browser.",
     category: "News",
     date: "April 20, 2024",
-    image: "https://placehold.co/600x400/6b5bf2/ffffff?text=Local-First",
+    image:
+      "https://placehold.co/600x400/6b5bf2/ffffff?text=Local-First",
   },
   {
     _id: "6",
@@ -81,12 +86,14 @@ export const mockPosts: BlogPost[] = [
       "Turn your Markdown manuscripts into professional EPUB ebooks in seconds.",
     category: "Guide",
     date: "April 15, 2024",
-    image: "https://placehold.co/600x400/c58af9/ffffff?text=Markdown+to+EPUB",
+    image:
+      "https://placehold.co/600x400/c58af9/ffffff?text=Markdown+to+EPUB",
   },
 ];
 
 function formatDate(value?: string) {
   if (!value) return "Draft";
+
   return new Intl.DateTimeFormat("en", {
     month: "long",
     day: "numeric",
@@ -94,9 +101,10 @@ function formatDate(value?: string) {
   }).format(new Date(value));
 }
 
-const ALL_CATEGORIES = ["All", "Tutorial", "Guide", "Tips", "News"];
+type CategoryBadgeProps = {
+  label: string;
+};
 
-type CategoryBadgeProps = { label: string };
 function CategoryBadge({ label }: CategoryBadgeProps) {
   return (
     <span className="inline-block rounded bg-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
@@ -106,44 +114,121 @@ function CategoryBadge({ label }: CategoryBadgeProps) {
 }
 
 export default function Blog() {
-  const [posts, setPosts] = useState<BlogPost[]>(mockPosts);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchFailed, setFetchFailed] = useState(false);
+
   const [activeCategory, setActiveCategory] = useState("All");
 
+  const [categories, setCategories] = useState<string[]>(["All"]);
+
   useEffect(() => {
-    if (!isSanityConfigured) return;
+    // ───────────────── FALLBACK IF SANITY DISABLED ─────────────────
+    if (!isSanityConfigured) {
+      setPosts(mockPosts);
+
+      const uniqueCategories = [
+        "All",
+        ...Array.from(new Set(mockPosts.map((p) => p.category))).filter(
+          Boolean
+        ),
+      ];
+
+      setCategories(uniqueCategories);
+      setLoading(false);
+
+      return;
+    }
+
+    setLoading(true);
+
     client
       .fetch<SanityPost[]>(
         `*[_type == "post"] | order(publishedAt desc) {
-          _id, title, excerpt, category, publishedAt, slug, mainImage
-        }`,
+          _id,
+          title,
+          excerpt,
+          publishedAt,
+          slug,
+          mainImage,
+          "categories": categories[]->{title}
+        }`
       )
       .then((data) => {
-        if (!data?.length) return;
-        setPosts(
-          data.map((post) => ({
-            _id: post._id,
-            title: post.title || "Untitled post",
-            excerpt: post.excerpt || "",
-            category: post.category || "Blog",
-            date: formatDate(post.publishedAt),
-            image: post.mainImage
-              ? urlFor(post.mainImage).width(900).height(520).fit("crop").url()
-              : "https://placehold.co/600x400/6b5bf2/ffffff?text=EPUBForge",
-            slug: post.slug?.current,
-          })),
-        );
+        // ───────────────── NO POSTS RETURNED ─────────────────
+        if (!data?.length) {
+          setFetchFailed(true);
+          return;
+        }
+
+        const mapped = data.map((post) => ({
+          _id: post._id,
+          title: post.title || "Untitled post",
+          excerpt: post.excerpt || "",
+          category: post.categories?.[0]?.title || "Blog",
+          date: formatDate(post.publishedAt),
+
+          image: post.mainImage
+            ? urlFor(post.mainImage)
+                .width(900)
+                .height(520)
+                .fit("crop")
+                .url()
+            : "https://placehold.co/600x400/6b5bf2/ffffff?text=EPUBForge",
+
+          slug: post.slug?.current,
+        }));
+
+        setPosts(mapped);
+
+        const uniqueCategories = [
+          "All",
+          ...Array.from(new Set(mapped.map((p) => p.category))).filter(
+            Boolean
+          ),
+        ];
+
+        setCategories(uniqueCategories);
       })
       .catch((err: unknown) => {
         console.warn("Sanity blog fetch failed.", err);
+
+        setFetchFailed(true);
+
+        setPosts(mockPosts);
+
+        const uniqueCategories = [
+          "All",
+          ...Array.from(new Set(mockPosts.map((p) => p.category))).filter(
+            Boolean
+          ),
+        ];
+
+        setCategories(uniqueCategories);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
+  // ───────────────── LOADING STATE ─────────────────
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#09090e]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  const finalPosts = posts.length ? posts : fetchFailed ? mockPosts : [];
+
   const filtered =
     activeCategory === "All"
-      ? posts
-      : posts.filter((p) => p.category === activeCategory);
+      ? finalPosts
+      : finalPosts.filter((p) => p.category === activeCategory);
 
   const featured = filtered[0];
+
   const rest = filtered.slice(1);
 
   return (
@@ -153,13 +238,15 @@ export default function Blog() {
         <h1 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
           EPUBForge Blog
         </h1>
+
         <p className="mx-auto mt-3 max-w-2xl text-base text-slate-500 dark:text-slate-400">
-          Tips, tutorials, and news about ebook conversion, formats, and digital reading.
+          Tips, tutorials, and news about ebook conversion, formats, and
+          digital reading.
         </p>
 
-        {/* Category tabs */}
+        {/* ── Dynamic Category Tabs ── */}
         <div className="mt-8 flex flex-wrap justify-center gap-2 px-4">
-          {ALL_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               type="button"
@@ -178,13 +265,14 @@ export default function Blog() {
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {filtered.length === 0 && (
-          <p className="py-20 text-center text-slate-400">No posts in this category yet.</p>
+          <p className="py-20 text-center text-slate-400">
+            No posts in this category yet.
+          </p>
         )}
 
-        {/* ── Featured + sidebar layout (top) ── */}
+        {/* ── Featured + Sidebar ── */}
         {featured && (
           <div className="mb-10 grid gap-6 lg:grid-cols-[1.55fr_1fr]">
-            {/* Featured post — large card with overlay */}
             <Link
               to={`/blog/${featured.slug || featured._id}`}
               className="group relative flex h-[420px] overflow-hidden rounded-2xl lg:h-[440px]"
@@ -194,23 +282,27 @@ export default function Blog() {
                 alt={featured.title}
                 className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
-              {/* Dark overlay */}
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              {/* Text overlay */}
+
               <div className="relative mt-auto p-6 text-white">
                 <CategoryBadge label={featured.category} />
+
                 <h2 className="mt-3 text-2xl font-black leading-tight drop-shadow sm:text-3xl">
                   {featured.title}
                 </h2>
+
                 <p className="mt-2 flex items-center gap-2 text-xs text-slate-300">
                   <span>📅 {featured.date}</span>
+
                   <span>·</span>
+
                   <span>💬 No Comments</span>
                 </p>
               </div>
             </Link>
 
-            {/* Right sidebar — 2 smaller cards */}
+            {/* ── Right Sidebar Posts ── */}
             <div className="flex flex-col gap-6">
               {rest.slice(0, 2).map((post) => (
                 <Link
@@ -218,7 +310,6 @@ export default function Blog() {
                   to={`/blog/${post.slug || post._id}`}
                   className="group flex overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
                 >
-                  {/* Thumbnail */}
                   <div className="relative h-auto w-44 shrink-0 overflow-hidden">
                     <img
                       src={post.image}
@@ -226,15 +317,19 @@ export default function Blog() {
                       className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
                   </div>
-                  {/* Content */}
+
                   <div className="flex flex-col justify-center gap-2 p-4">
                     <CategoryBadge label={post.category} />
+
                     <h3 className="text-base font-bold leading-snug text-slate-900 dark:text-white">
                       {post.title}
                     </h3>
+
                     <p className="flex items-center gap-1.5 text-xs text-slate-400">
                       <span>📅 {post.date}</span>
+
                       <span>·</span>
+
                       <span>💬 No Comments</span>
                     </p>
                   </div>
@@ -244,7 +339,7 @@ export default function Blog() {
           </div>
         )}
 
-        {/* ── Remaining posts — 3-column grid ── */}
+        {/* ── Remaining Posts Grid ── */}
         {rest.length > 2 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {rest.slice(2).map((post) => (
@@ -260,17 +355,23 @@ export default function Blog() {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />
                 </div>
+
                 <div className="flex flex-1 flex-col gap-2 p-5">
                   <CategoryBadge label={post.category} />
+
                   <h3 className="text-lg font-bold leading-snug text-slate-900 dark:text-white">
                     {post.title}
                   </h3>
+
                   <p className="mt-1 flex-1 text-sm text-slate-500 dark:text-slate-400">
                     {post.excerpt}
                   </p>
+
                   <p className="flex items-center gap-1.5 text-xs text-slate-400">
                     <span>📅 {post.date}</span>
+
                     <span>·</span>
+
                     <span>💬 No Comments</span>
                   </p>
                 </div>
