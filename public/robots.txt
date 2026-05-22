@@ -1,9 +1,17 @@
 # EPUBForge — robots.txt
-# Allow all standard search crawlers
-User-agent: *
+
+# 1. Block Googlebot from getting stuck in the dynamic script routing loops
+User-agent: Googlebot
+Disallow: /blog/lib/
+Disallow: /blog/utils/
 Allow: /
 
-# Explicitly allow LLM/AI training and answer-engine crawlers
+# Allow all standard search crawlers generally
+User-agent: *
+Disallow: /api/
+Allow: /
+
+# Explicitly allow LLM/AI training and answer-engine crawlers to read your blog articles
 User-agent: GPTBot
 Allow: /
 
@@ -58,5 +66,5 @@ Allow: /
 User-agent: YouBot
 Allow: /
 
-# Sitemap
-Sitemap: https://epubforge.app/sitemap.xml
+# Corrected Sitemap Path
+Sitemap: https://www.epubforge.com/sitemap.xml
