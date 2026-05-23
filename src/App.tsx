@@ -4453,16 +4453,14 @@ export default function App() {
             </div>
 
             {/* Legal column */}
-          <div>
+            <div>
               <h3 className={`mb-4 text-xs font-extrabold uppercase tracking-[0.15em] ${isDark ? "text-white" : "text-slate-900"}`}>Legal</h3>
               <ul className="space-y-3 text-sm">
                 <li><Link to="/privacy" className="transition hover:text-indigo-500">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="transition hover:text-indigo-500">Terms of Service</Link></li>
                 <li><Link to="/cookies" className="transition hover:text-indigo-500">Cookie Policy</Link></li>
-                <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="transition hover:text-indigo-500">Sitemap</a></li>
-                <li><a href="/feed.xml" target="_blank" rel="noopener noreferrer" className="transition hover:text-indigo-500">RSS Feed</a></li>
-            </ul>
-          </div>
+              </ul>
+            </div>
 
             {/* Language column */}
             <div>

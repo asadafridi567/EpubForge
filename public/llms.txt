@@ -89,6 +89,6 @@ Bulk batches are supported — drop dozens of ebooks at once, each with its own 
 
 ## Links
 
-- Homepage: https://epubforge.com/
-- Sitemap: https://epubforge.com/sitemap.xml
-- Manifest: https://epubforge.com/manifest.webmanifest
+- Homepage: https://epubforge.app/
+- Sitemap: https://epubforge.app/sitemap.xml
+- Manifest: https://epubforge.app/manifest.webmanifest
