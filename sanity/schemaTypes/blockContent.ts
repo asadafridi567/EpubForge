@@ -45,6 +45,59 @@ export default defineType({
       type: 'image',
       options: {hotspot: true},
     }),
+
+    // ✅ CODE BLOCK — added here
+    defineArrayMember({
+      type: 'code',
+      title: 'Code Block',
+      options: {
+        language: 'bash',
+        languageAlternatives: [
+      // Web
+      {title: 'HTML',           value: 'html'},
+      {title: 'CSS',            value: 'css'},
+      {title: 'SCSS',           value: 'scss'},
+      {title: 'JavaScript',     value: 'javascript'},
+      {title: 'TypeScript',     value: 'typescript'},
+      {title: 'JSX',            value: 'jsx'},
+      {title: 'TSX',            value: 'tsx'},
+
+      // Backend
+      {title: 'Python',         value: 'python'},
+      {title: 'PHP',            value: 'php'},
+      {title: 'Ruby',           value: 'ruby'},
+      {title: 'Java',           value: 'java'},
+      {title: 'C',              value: 'c'},
+      {title: 'C++',            value: 'cpp'},
+      {title: 'C#',             value: 'csharp'},
+      {title: 'Go',             value: 'go'},
+      {title: 'Rust',           value: 'rust'},
+      {title: 'Swift',          value: 'swift'},
+      {title: 'Kotlin',         value: 'kotlin'},
+
+      // Data & Config
+      {title: 'JSON',           value: 'json'},
+      {title: 'YAML',           value: 'yaml'},
+      {title: 'TOML',           value: 'toml'},
+      {title: 'XML',            value: 'xml'},
+      {title: 'CSV',            value: 'csv'},
+      {title: 'SQL',            value: 'sql'},
+      {title: 'GraphQL',        value: 'graphql'},
+
+      // Shell & DevOps
+      {title: 'Bash',           value: 'bash'},
+      {title: 'Shell',          value: 'shell'},
+      {title: 'PowerShell',     value: 'powershell'},
+      {title: 'Docker',         value: 'docker'},
+
+      // Docs & Markup
+      {title: 'Markdown',       value: 'markdown'},
+      {title: 'Plain Text',     value: 'text'},
+    ],
+        withFilename: true,
+      },
+    }),
+
     defineArrayMember({
       type: 'object',
       name: 'table',
@@ -66,7 +119,7 @@ export default defineType({
                   type: 'array',
                   of: [
                     {
-                      type: 'object',   // ← changed from string
+                      type: 'object',
                       name: 'cell',
                       title: 'Cell',
                       fields: [

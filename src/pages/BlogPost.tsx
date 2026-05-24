@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { client, isSanityConfigured, urlFor } from "../sanity/client";
 import { mockPosts } from "./Blog";
+import CodeBlock from "../components/CodeBlock";
 
 type SanityPost = {
   _id: string;
@@ -34,6 +35,8 @@ function formatDate(value?: string) {
 
 const portableTextComponents: PortableTextComponents = {
   types: {
+    code: CodeBlock,
+
     table: ({ value }: { value: TableValue }) => {
       const rows = value?.rows ?? [];
       if (rows.length === 0) return null;
@@ -187,11 +190,12 @@ export default function BlogPost() {
 
     client
       .fetch<SanityPost | null>(
-        `*[_type == "post" && publishedAt <= now() && slug.current == $slug][0] {
+        // ✅ No date filter — fetch ANY post by slug for testing
+        `*[_type == "post" && slug.current == $slug][0] {
           _id,
           title,
           excerpt,
-          category,
+          "category": categories[0]->title,
           publishedAt,
           slug,
           mainImage,

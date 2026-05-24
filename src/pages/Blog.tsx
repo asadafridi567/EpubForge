@@ -107,7 +107,6 @@ function CategoryBadge({ label }: CategoryBadgeProps) {
 export default function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [fetchFailed, setFetchFailed] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [categories, setCategories] = useState<string[]>(["All"]);
 
@@ -126,8 +125,8 @@ export default function Blog() {
 
     client
       .fetch<SanityPost[]>(
-        // ← only fetch posts where publishedAt is today or earlier
-        `*[_type == "post" && publishedAt <= now()] | order(publishedAt desc) {
+        // ✅ No date filter — fetch ALL published posts for testing
+        `*[_type == "post"] | order(publishedAt desc) {
           _id,
           title,
           excerpt,
@@ -139,7 +138,11 @@ export default function Blog() {
       )
       .then((data) => {
         if (!data?.length) {
-          setFetchFailed(true);
+          setPosts(mockPosts);
+          setCategories([
+            "All",
+            ...Array.from(new Set(mockPosts.map((p) => p.category))).filter(Boolean),
+          ]);
           return;
         }
 
@@ -150,11 +153,7 @@ export default function Blog() {
           category: post.categories?.[0]?.title || "Blog",
           date: formatDate(post.publishedAt),
           image: post.mainImage
-            ? urlFor(post.mainImage)
-                .width(900)
-                .height(520)
-                .fit("crop")
-                .url()
+            ? urlFor(post.mainImage).width(900).height(520).fit("crop").url()
             : "https://placehold.co/600x400/6b5bf2/ffffff?text=EPUBForge",
           slug: post.slug?.current,
         }));
@@ -167,7 +166,6 @@ export default function Blog() {
       })
       .catch((err: unknown) => {
         console.warn("Sanity blog fetch failed.", err);
-        setFetchFailed(true);
         setPosts(mockPosts);
         setCategories([
           "All",
@@ -185,11 +183,11 @@ export default function Blog() {
     );
   }
 
-  const finalPosts = posts.length ? posts : fetchFailed ? mockPosts : [];
   const filtered =
     activeCategory === "All"
-      ? finalPosts
-      : finalPosts.filter((p) => p.category === activeCategory);
+      ? posts
+      : posts.filter((p) => p.category === activeCategory);
+
   const featured = filtered[0];
   const rest = filtered.slice(1);
 
