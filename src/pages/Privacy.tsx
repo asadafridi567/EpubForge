@@ -50,7 +50,7 @@ export default function Privacy() {
           </div>
           <div>
             <h2 className={`mb-3 text-xl font-bold ${h2}`}>5. Contact Us</h2>
-            <p>If you have any questions about this privacy policy, please contact us at support@epubforge.app.</p>
+            <p>If you have any questions about this privacy policy, please contact us at support@epubforge.com.</p>
           </div>
         </div>
       </div>
