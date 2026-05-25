@@ -111,6 +111,7 @@ export default function Blog() {
   const [categories, setCategories] = useState<string[]>(["All"]);
 
   useEffect(() => {
+    // Sanity not configured — show mock posts only
     if (!isSanityConfigured) {
       setPosts(mockPosts);
       setCategories([
@@ -125,8 +126,8 @@ export default function Blog() {
 
     client
       .fetch<SanityPost[]>(
-        // ✅ No date filter — fetch ALL published posts for testing
-        `*[_type == "post"] | order(publishedAt desc) {
+        // ✅ Date filter intact — only show posts where publishedAt <= now()
+        `*[_type == "post" && publishedAt <= now()] | order(publishedAt desc) {
           _id,
           title,
           excerpt,
@@ -138,11 +139,9 @@ export default function Blog() {
       )
       .then((data) => {
         if (!data?.length) {
-          setPosts(mockPosts);
-          setCategories([
-            "All",
-            ...Array.from(new Set(mockPosts.map((p) => p.category))).filter(Boolean),
-          ]);
+          // ✅ Sanity is configured but no posts due yet — show empty, NOT mock posts
+          setPosts([]);
+          setCategories(["All"]);
           return;
         }
 
@@ -165,6 +164,7 @@ export default function Blog() {
         ]);
       })
       .catch((err: unknown) => {
+        // ✅ Real network error only — fall back to mock posts
         console.warn("Sanity blog fetch failed.", err);
         setPosts(mockPosts);
         setCategories([
@@ -223,6 +223,7 @@ export default function Blog() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* ✅ No posts due yet — clean empty state */}
         {filtered.length === 0 && (
           <p className="py-20 text-center text-slate-400">
             No posts in this category yet.

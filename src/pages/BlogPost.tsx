@@ -173,25 +173,24 @@ const portableTextComponents: PortableTextComponents = {
 
 export default function BlogPost() {
   const { slug } = useParams();
-  const fallback =
-    mockPosts.find((post) => post.slug === slug || post._id === slug) ||
-    mockPosts[0];
   const [post, setPost] = useState<SanityPost | null>(null);
   const [loading, setLoading] = useState(true);
-  const [fetchFailed, setFetchFailed] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    // Sanity not configured — fall back to mock posts
     if (!slug || !isSanityConfigured) {
       setLoading(false);
       return;
     }
 
     setLoading(true);
+    setNotFound(false);
 
     client
       .fetch<SanityPost | null>(
-        // ✅ No date filter — fetch ANY post by slug for testing
-        `*[_type == "post" && slug.current == $slug][0] {
+        // ✅ Date filter intact — future posts won't load even by direct URL
+        `*[_type == "post" && publishedAt <= now() && slug.current == $slug][0] {
           _id,
           title,
           excerpt,
@@ -207,17 +206,23 @@ export default function BlogPost() {
         if (data) {
           setPost(data);
         } else {
-          setFetchFailed(true);
+          // Post doesn't exist or is future-dated — show "not found"
+          // ✅ No fallback to mockPosts here
+          setNotFound(true);
         }
       })
       .catch((error: unknown) => {
         console.warn("Sanity post fetch failed.", error);
-        setFetchFailed(true);
+        // Real network error — still show "not found", not a mock post
+        setNotFound(true);
       })
       .finally(() => setLoading(false));
   }, [slug]);
 
-  const activePost = post || (fetchFailed ? fallback : null);
+  // mockFallback ONLY used when Sanity is not configured at all
+  const mockFallback = !isSanityConfigured
+    ? mockPosts.find((p) => p.slug === slug || p._id === slug) || mockPosts[0]
+    : null;
 
   if (loading) {
     return (
@@ -227,27 +232,36 @@ export default function BlogPost() {
     );
   }
 
-  if (!activePost) {
+  // Show "not found" if: Sanity returned nothing OR post is future-dated
+  if (notFound || (!post && !mockFallback)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4] text-lg text-slate-600 dark:bg-[#09090e] dark:text-slate-300">
-        Post not found.
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#f8f7f4] text-lg text-slate-600 dark:bg-[#09090e] dark:text-slate-300">
+        <p>Post not found.</p>
+        <Link
+          to="/blog"
+          className="text-sm font-bold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+        >
+          ← Back to Blog
+        </Link>
       </div>
     );
   }
+
+  const activePost = post || mockFallback!;
 
   const title = activePost.title;
   const excerpt = activePost.excerpt;
   const category = activePost.category;
   const date = activePost.publishedAt
     ? formatDate(activePost.publishedAt)
-    : fallback.date;
+    : (mockFallback as typeof mockFallback & { date?: string })?.date ?? "";
   const image = activePost.mainImage
     ? urlFor(activePost.mainImage)
         .width(1400)
         .height(720)
         .fit("crop")
         .url()
-    : fallback.image;
+    : (mockFallback as typeof mockFallback & { image?: string })?.image ?? "";
 
   return (
     <article className="min-h-screen bg-[#f8f7f4] text-slate-900 transition-colors duration-300 dark:bg-[#09090e] dark:text-slate-100">
