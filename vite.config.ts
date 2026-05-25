@@ -32,8 +32,26 @@ export default defineConfig(async () => {
           "/blog",
           ...blogRoutes,
         ],
+
+        // ✅ Fix: explicitly tell the plugin where dist is
+        // so it can create robots.txt even when viteSingleFile changes output structure
+        outDir: "dist",
+
+        // ✅ Generate robots.txt directly from the plugin
+        // instead of relying on it being copied from public/
+        robots: [
+          {
+            userAgent: "*",
+            allow: "/",
+          },
+        ],
       }),
     ],
+
+    build: {
+      // ✅ Explicitly set outDir so both plugins agree on the output folder
+      outDir: "dist",
+    },
 
     resolve: {
       alias: {
