@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { client, isSanityConfigured, urlFor } from "../sanity/client";
 import { mockPosts } from "./Blog";
-import CodeBlock from "../components/CodeBlock";
+import CodeBlock from "../components/codeBlock";
 
 type SanityPost = {
   _id: string;
