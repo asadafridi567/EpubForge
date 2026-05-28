@@ -4449,6 +4449,8 @@ export default function App() {
                 <li><Link to="/blog" className="transition hover:text-indigo-500">Blog</Link></li>
                 <li><Link to="/contact" className="transition hover:text-indigo-500">Contact</Link></li>
                 <li><Link to="/faq" className="transition hover:text-indigo-500">FAQ</Link></li>
+                <li><a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="transition hover:text-indigo-500">Sitemap</a></li>
+                <li><a href="/feed.xml" target="_blank" rel="noopener noreferrer" className="transition hover:text-indigo-500">RSS Feed</a></li>
               </ul>
             </div>
 
